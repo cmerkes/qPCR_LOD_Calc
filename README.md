@@ -1,5 +1,22 @@
-# qPCR_LOD_Calc
+# Generic qPCR Limit of Detection (LOD) / Limit of Quantification (LOQ) calculator
 
+Christopher M. Merkes, Katy E. Klymus, Michael J. Allison, Caren Goldberg, Caren C. Helbing, Margaret E. Hunter, Craig A. Jackson, Richard F. Lance, Anna M. Mangan, Emy M. Monroe, Antoinette J. Piaggio, Joel P. Stokdyk, Chris C. Wilson, Catherine Richter
+
+This script is designed to analyze qPCR data for many replicates of known concentration DNA standards and determine the limit of detection (LoD) and limit of quantification (LoQ) for use in environmental DNA applications. It is written in the hopes that users with even limited knowledge of R will be able to successfully use the code to analyze their own data in the same way as other eDNA researchers to get similar results and automatically generate plots to visualize the data. The code has 5 lines for user input and requires a few simple restrictions on the input data, but after that the user should be able to run the code without any further coding or interventions.
+
+No R programming ability is required to run this script. However, the code does include many descriptive comments for those with moderate coding ability to understand what the commands are doing, and this file also includes tips for savvy users to make minor adjustments and gain additional functionality for refining their own analyses.
+
+## Code files
+
+This repository contains the following files:
+- `README.md`: This file
+- `LICENSE`: The standard USGS software license
+- `LoD-calculator.R`: The script for automated generic LOD / LOQ analysis
+- `TBD`: Example data that can be run for new users to do test runs
+
+## Contact for code
+
+Primary code developer: Chris Merkes (cmerkes@usgs.gov)
 
 ## Disclaimer
 
