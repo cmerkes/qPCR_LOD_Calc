@@ -14,13 +14,10 @@ library(ggplot2)
 library(drc)
 
 ## Set your working directory to where your csv file is saved (MODIFY AS NEEDED):
-setwd("C:/Users/cmerkes/Desktop/Data/LoD/")
-#setwd("C:/Users/cmerkes/Desktop/Data/LoD/emy_data/")
+setwd("~/Desktop/Data/LoD/")
 
 ## Read in your data file (MODIFY FILE NAME AS NEEDED):
-DAT <- read.csv("GEDWG_LOD_DATA3.csv")
-#DAT <- read.csv("Helbing-LOD_LOQ_Data-022019CCH.csv")
-#DAT <- read.csv("Emy-data.csv")
+DAT <- read.csv("Data.csv")
 
 ## Define your CV threshold for LoQ:
 LOQ.Threshold <- 0.35
