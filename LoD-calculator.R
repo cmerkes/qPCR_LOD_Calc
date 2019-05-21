@@ -14,13 +14,10 @@ library(ggplot2)
 library(drc)
 
 ## Set your working directory to where your csv file is saved (MODIFY AS NEEDED):
-setwd("C:/Users/cmerkes/Desktop/Data/LoD/")
-#setwd("C:/Users/cmerkes/Desktop/Data/LoD/emy_data/")
+setwd("~/Desktop/Data/LoD/")
 
 ## Read in your data file (MODIFY FILE NAME AS NEEDED):
-DAT <- read.csv("GEDWG_LOD_DATA3.csv")
-#DAT <- read.csv("Helbing-LOD_LOQ_Data-022019CCH.csv")
-#DAT <- read.csv("Emy-data.csv")
+DAT <- read.csv("Data.csv")
 
 ## Define your CV threshold for LoQ:
 LOQ.Threshold <- 0.35
@@ -482,11 +479,11 @@ for(i in 1:length(Targets)) {
     ylab("Cq-value") +
     geom_abline(intercept=coef(get(curve.list[i+1]))[1],
                 slope=coef(get(curve.list[i+1]))[2]) +
-    geom_vline(xintercept=DAT3$LOD[i],linetype=2) +
-    geom_vline(xintercept=DAT3$LOQ[i],colour="red") +
-    annotate("text",y=max(DAT$Cq[DAT$Target==Targets[i]],na.rm=T)*0.99,
+    geom_vline(xintercept=DAT3$LOD[i],colour="red") +
+    geom_vline(xintercept=DAT3$LOQ[i],linetype=2) +
+    annotate("text",y=max(DAT$Cq[DAT$Target==Targets[i]],na.rm=T)*0.99,color="red",
              x=DAT3$LOD[i]*0.8,angle=90,label="LOD") +
-    annotate("text",y=max(DAT$Cq[DAT$Target==Targets[i]],na.rm=T)*0.94,color="red",
+    annotate("text",y=max(DAT$Cq[DAT$Target==Targets[i]],na.rm=T)*0.94,
              x=DAT3$LOQ[i]*0.8,angle=90,label="LOQ") +
     theme_bw() + theme(legend.justification=c(1,1),legend.position=c(1,0.99)) +
     ggtitle(paste0("Standard curve for: ",Targets[i])) +
