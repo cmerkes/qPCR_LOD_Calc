@@ -27,6 +27,10 @@ This software is preliminary or provisional and is subject to revision. It is be
 
 This software is provided "AS IS".
 
+## Suggested Citation
+
+Merkes CM, Klymus KE, Allison MJ, Goldberg C, Helbing CC, Hunter ME, Jackson CA, Lance RF, Mangan AM, Monroe EM, Piaggio AJ, Stokdyk JP, Wilson CC, Richter C. (2019) Generic qPCR Limit of Detection (LOD) / Limit of Quantification (LOQ) calculator. R Script. Available at: https://github.com/cmerkes/qPCR_LOD_Calc. DOI: https://doi.org/10.5066/P9GT00GB. Date Accessed: <DATE>
+
 ## Data Requirements
 
 The code is written to expect a comma separated values (\*.csv) file with at least 3 specific columns: Target, Cq, and SQ. Additional columns can be included if they are helpful for the user to keep track of the data, but they will be ignored by the script.
