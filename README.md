@@ -14,19 +14,6 @@ This repository contains the following files:
 - `LoD-calculator.R`: The script for automated generic LOD / LOQ analysis
 - `Data.csv`: Example data that can be run for new users to do test runs
 
-## Contact for code
-
-Primary code developer: Chris Merkes (cmerkes@usgs.gov)
-
-## Disclaimer
-
-This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey, an agency of the United States Department of Interior. For more information, see the [official USGS copyright policy](https://www2.usgs.gov/visual-id/credit_usgs.html#copyright/).
-
-
-This software is preliminary or provisional and is subject to revision. It is being provided to meet the need for timely best science. The software has not received final approval by the U.S. Geological Survey (USGS). No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. The software is provided on the condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the software.
-
-This software is provided "AS IS".
-
 ## Suggested Citation
 
 Merkes CM, Klymus KE, Allison MJ, Goldberg C, Helbing CC, Hunter ME, Jackson CA, Lance RF, Mangan AM, Monroe EM, Piaggio AJ, Stokdyk JP, Wilson CC, Richter C. (2019) Generic qPCR Limit of Detection (LOD) / Limit of Quantification (LOQ) calculator. R Script. Available at: https://github.com/cmerkes/qPCR_LOD_Calc. DOI: https://doi.org/10.5066/P9GT00GB. Date Accessed: <DATE>
@@ -45,3 +32,15 @@ Negative reactions can be identified in a variety of ways. The criteria used are
 
 SQ column should be populated with numerical values for expected standard concentration. If estimated copy numbers per some calibration curve included on the plate are provided instead of the expected concentration in the SQ column, they will be assumed to all be different unique standards tested rather than replicates of the same standard, and that will disrupt all of the models and calculations performed accordingly. *Coming up with a generic way to detect this and automatically flag it is on my to-do list, and will likely be included in a future update.*
 
+## Contact for code
+
+Primary code developer: Chris Merkes (cmerkes@usgs.gov)
+
+## Disclaimer
+
+This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey, an agency of the United States Department of Interior. For more information, see the [official USGS copyright policy](https://www2.usgs.gov/visual-id/credit_usgs.html#copyright/).
+
+
+This software is preliminary or provisional and is subject to revision. It is being provided to meet the need for timely best science. The software has not received final approval by the U.S. Geological Survey (USGS). No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. The software is provided on the condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the software.
+
+This software is provided "AS IS".
