@@ -42,23 +42,23 @@ write(paste0("Analysis started: ",date(),"\n\n"),file="Analysis Log.txt")
 
 ## Check the data:
 if(sum(colnames(DAT)=="Target")!=1) { #Is there a "Target" column?
-  A <- grep("target",colnames(DAT),ignore.case=T)
+  A <- grep("target",colnames(DAT),ignore.case=TRUE)
   if(length(A)==1) { colnames(DAT)[A] <- "Target" } #Rename target column if it is mispelled but can be identified and there is only 1.
-  if(length(A)!=1) { write("There is a problem with the 'Target' column.\n\n",file="Analysis Log.txt",append=T) } #Add error message to analysis log.
+  if(length(A)!=1) { write("There is a problem with the 'Target' column.\n\n",file="Analysis Log.txt",append=TRUE) } #Add error message to analysis log.
   if(length(A)>1) { cat("ERROR: multiple 'Target' columns detected.",colnames(DAT)[A],sep="\n") }
   if(length(A)==0) { print("ERROR: cannot detect 'Target' column.") }
 }
 if(sum(colnames(DAT)=="Cq")!=1) { #Is there a "Cq" column?
-  A <- grep("cq|ct|cycle",colnames(DAT),ignore.case=T)
+  A <- grep("cq|ct|cycle",colnames(DAT),ignore.case=TRUE)
   if(length(A)==1) { colnames(DAT)[A] <- "Cq" } #Rename cq column if it is mispelled but can be identified and there is only 1.
-  if(length(A)!=1) { write("There is a problem with the 'Cq' column.\n\n",file="Analysis Log.txt",append=T) } #Add error message to analysis log.
+  if(length(A)!=1) { write("There is a problem with the 'Cq' column.\n\n",file="Analysis Log.txt",append=TRUE) } #Add error message to analysis log.
   if(length(A)>1) { cat("ERROR: multiple 'Cq' columns detected.",colnames(DAT)[A],sep="\n") }
   if(length(A)==0) { print("ERROR: cannot detect 'Cq' column.") }
 }
 if(sum(colnames(DAT)=="SQ")!=1) { #Is there a "SQ" column?
-  A <- grep("sq|copies|starting|quantity",colnames(DAT),ignore.case=T)
+  A <- grep("sq|copies|starting|quantity",colnames(DAT),ignore.case=TRUE)
   if(length(A)==1) { colnames(DAT)[A] <- "SQ" } #Rename SQ column if it is mispelled but can be identified and there is only 1.
-  if(length(A)!=1) { write("There is a problem with the 'SQ' column.\n\n",file="Analysis Log.txt",append=T) } #Add error message to analysis log.
+  if(length(A)!=1) { write("There is a problem with the 'SQ' column.\n\n",file="Analysis Log.txt",append=TRUE) } #Add error message to analysis log.
   if(length(A)>1) { cat("ERROR: multiple 'SQ' columns detected.",colnames(DAT)[A],sep="\n") }
   if(length(A)==0) { print("ERROR: cannot detect 'SQ' column.") }
 }
@@ -69,10 +69,10 @@ DAT$Cq <- suppressWarnings(as.numeric(as.character(DAT$Cq))) #Non-numerical valu
 DAT$SQ <- suppressWarnings(as.numeric(as.character(DAT$SQ))) #Non-numerical values (i.e. NTC) will be converted to NAs
 if(sum(is.na(DAT$SQ))>0) {
   write(paste0("WARNING: ",sum(is.na(DAT$SQ))," data points excluded without a valid starting quantity (SQ)!\nHere is a sample of the data being excluded:\n"),
-        file="Analysis Log.txt",append=T)
-  suppressWarnings(write.table(head(DAT[is.na(DAT$SQ),]),file="Analysis Log.txt",append=T,
-                               sep="\t",eol="\n",row.names=F,col.names=T))
-  write("\n",file="Analysis Log.txt",append=T)
+        file="Analysis Log.txt",append=TRUE)
+  suppressWarnings(write.table(head(DAT[is.na(DAT$SQ),]),file="Analysis Log.txt",append=TRUE,
+                               sep="\t",eol="\n",row.names=FALSE,col.names=TRUE))
+  write("\n",file="Analysis Log.txt",append=TRUE)
   print(paste0("WARNING: ",sum(is.na(DAT$SQ))," data points excluded without a valid starting quantity (SQ)!"))
   print(head(DAT[is.na(DAT$SQ),]))
 }
@@ -95,7 +95,7 @@ OUTS <- data.frame(Target=Target,Standard=Standards,Outliers=NA)
 ## Identify any wells where the Cq value is more than 10% away from the median for
 ##   that standard.
 for(i in 1:nrow(OUTS)) {
-  MED <- median(DAT$Cq[DAT$SQ==OUTS$Standard[i]&DAT$Target==OUTS$Target[i]],na.rm=T)
+  MED <- median(DAT$Cq[DAT$SQ==OUTS$Standard[i]&DAT$Target==OUTS$Target[i]],na.rm=TRUE)
   A <- which(DAT$SQ==OUTS$Standard[i]&DAT$Target==OUTS$Target[i]&DAT$Cq<0.9*MED&!is.na(DAT$Cq))
   B <- which(DAT$SQ==OUTS$Standard[i]&DAT$Target==OUTS$Target[i]&DAT$Cq>1.1*MED&!is.na(DAT$Cq))
   if(length(c(A,B))>0) {
@@ -107,12 +107,12 @@ for(i in 1:nrow(OUTS)) {
 if(sum(!is.na(OUTS$Outliers))>0) {
   OUT.ROW <- paste(OUTS$Outliers[!is.na(OUTS$Outliers)],collapse=",")
   OUT.ROW2 <- unlist(strsplit(OUT.ROW,split=","))
-  write.csv(DAT[OUT.ROW2,],file="Potential-Outliers.csv",row.names=F)
+  write.csv(DAT[OUT.ROW2,],file="Potential-Outliers.csv",row.names=FALSE)
   write("Potential outliers have been detected. Please review the data exported as
 Potential-Outliers.csv, and determine if any data points need to be excluded
 or adjusted due to false positives or poorly normalized baselines.",
-        file="Analysis Log.txt",append=T)
-  write("\n",file="Analysis Log.txt",append=T)
+        file="Analysis Log.txt",append=TRUE)
+  write("\n",file="Analysis Log.txt",append=TRUE)
 }
 
 ## Generate standard curves using all data and calculate copy estimates for each
@@ -124,27 +124,27 @@ for(i in 1:length(Targets)) {
   STDS <- data.frame(S=unique(DAT$SQ[DAT$Target==Targets[i]]),R=NA)
   ## Calculate detection rates for each standard:
   for(j in 1:nrow(STDS)) {
-    STDS$R[j] <- sum(!is.na(DAT$Cq)&DAT$SQ==STDS$S[j]&DAT$Target==Targets[i],na.rm=T)/sum(DAT$SQ==STDS$S[j]&DAT$Target==Targets[i],na.rm=T)
+    STDS$R[j] <- sum(!is.na(DAT$Cq)&DAT$SQ==STDS$S[j]&DAT$Target==Targets[i],na.rm=TRUE)/sum(DAT$SQ==STDS$S[j]&DAT$Target==Targets[i],na.rm=TRUE)
   }
   ## Only use standards with 50% or greater detection rates for linear regression:
-  if(sum(STDS$R>=0.5,na.rm=T)>2) {
+  if(sum(STDS$R>=0.5,na.rm=TRUE)>2) {
     STDS2 <- STDS$S[STDS$R>=0.5&!is.na(STDS$R)&!is.na(STDS$S)]
   }
   ## If there are not at least 3 standards with 50% or greater detection, use the top 3:
-  if(sum(STDS$R>=0.5,na.rm=T)<3) {
-    STDS2 <- STDS$S[order(STDS$R,decreasing=T)][1:3]
+  if(sum(STDS$R>=0.5,na.rm=TRUE)<3) {
+    STDS2 <- STDS$S[order(STDS$R,decreasing=TRUE)][1:3]
   }
   ## Identify the 2nd and 3rd quartiles of each used standard for inclusion in the
   ##   standard curve calculations
   for(j in 1:length(STDS2)) {
     D <- DAT$Cq[DAT$Target==Targets[i]&DAT$SQ==STDS2[j]]
-    DAT$Mod[DAT$Target==Targets[i]&DAT$SQ==STDS2[j]&DAT$Cq>=quantile(D,na.rm=T)[2]&DAT$Cq<=quantile(D,na.rm=T)[4]&!is.na(DAT$SQ)] <- 1
+    DAT$Mod[DAT$Target==Targets[i]&DAT$SQ==STDS2[j]&DAT$Cq>=quantile(D,na.rm=TRUE)[2]&DAT$Cq<=quantile(D,na.rm=TRUE)[4]&!is.na(DAT$SQ)] <- 1
   }
   if(length(unique(DAT$SQ[DAT$Target==Targets[i]]))!=length(STDS2)) {
     ToWrite <- paste0("These standards not included in ",Targets[i],
                       " standard curve regression for copy estimate calculations, because they detected below 50%: ",
                       paste(setdiff(unique(DAT$SQ[DAT$Target==Targets[i]]),STDS2),collapse=", "),"\n\n")
-    write(ToWrite,file="Analysis Log.txt",append=T)
+    write(ToWrite,file="Analysis Log.txt",append=TRUE)
   }
   assign(paste0("curve",i),lm(Cq~log10(SQ),data=DAT[DAT$Target==Targets[i]&DAT$Mod==1,]))
   curve.list <- c(curve.list,paste0("curve",i))
@@ -160,18 +160,18 @@ DAT2 <- data.frame(Standards=Standards,Target=Target,Reps=NA,Detects=NA,Cq.mean=
 ##   deviations of Cq values, and coefficient of variation of copy estimates for
 ##   each standard and marker combination:
 for(i in 1:nrow(DAT2)) {
-  DAT2$Reps[i] <- sum(DAT$SQ==DAT2$Standards[i]&DAT$Target==DAT2$Target[i],na.rm=T)
-  DAT2$Detects[i] <- sum(!is.na(DAT$Cq)&DAT$SQ==DAT2$Standards[i]&DAT$Target==DAT2$Target[i],na.rm=T)
-  DAT2$Cq.mean[i] <- mean(DAT$Cq[DAT$SQ==DAT2$Standards[i]&DAT$Target==DAT2$Target[i]],na.rm=T)
-  DAT2$Cq.sd[i] <- sd(DAT$Cq[DAT$SQ==DAT2$Standards[i]&DAT$Target==DAT2$Target[i]],na.rm=T)
-  DAT2$Copy.CV[i] <- sd(DAT$Copy.Estimate[DAT$SQ==DAT2$Standards[i]&DAT$Target==DAT2$Target[i]],na.rm=T)/mean(DAT$Copy.Estimate[DAT$SQ==DAT2$Standards[i]&DAT$Target==DAT2$Target[i]],na.rm=T)
+  DAT2$Reps[i] <- sum(DAT$SQ==DAT2$Standards[i]&DAT$Target==DAT2$Target[i],na.rm=TRUE)
+  DAT2$Detects[i] <- sum(!is.na(DAT$Cq)&DAT$SQ==DAT2$Standards[i]&DAT$Target==DAT2$Target[i],na.rm=TRUE)
+  DAT2$Cq.mean[i] <- mean(DAT$Cq[DAT$SQ==DAT2$Standards[i]&DAT$Target==DAT2$Target[i]],na.rm=TRUE)
+  DAT2$Cq.sd[i] <- sd(DAT$Cq[DAT$SQ==DAT2$Standards[i]&DAT$Target==DAT2$Target[i]],na.rm=TRUE)
+  DAT2$Copy.CV[i] <- sd(DAT$Copy.Estimate[DAT$SQ==DAT2$Standards[i]&DAT$Target==DAT2$Target[i]],na.rm=TRUE)/mean(DAT$Copy.Estimate[DAT$SQ==DAT2$Standards[i]&DAT$Target==DAT2$Target[i]],na.rm=TRUE)
   DAT2$Cq.CV[i] <- sqrt(2^(DAT2$Cq.sd[i]^2*log(2))-1)
 }
 ## Calculate positive detection rate for each standard and marker combination:
 DAT2$Rate <- DAT2$Detects/DAT2$Reps
-write("Data Summary:",file="Analysis Log.txt",append=T)
-suppressWarnings(write.table(DAT2,file="Analysis Log.txt",append=T,sep="\t",eol="\n",
-                             row.names=F,col.names=T))
+write("Data Summary:",file="Analysis Log.txt",append=TRUE)
+suppressWarnings(write.table(DAT2,file="Analysis Log.txt",append=TRUE,sep="\t",eol="\n",
+                             row.names=FALSE,col.names=TRUE))
 
 ## Determine the lowest standard with 95% or greater detection:
 for(i in 1:length(Targets)) {
@@ -187,8 +187,8 @@ for(i in 1:length(Targets)) {
   if(length(which(DAT2$Rate<0.95&DAT2$Target==Targets[i]))==0) {
     ToWrite2 <- paste0("WARNING: LoD cannot be determined for ",Targets[i],", because it is lower than the lowest standard you tested.\nReport as <",A," copies/reaction, or retest with lower concentrations.")
   }
-  write(paste0("\n\n",ToWrite,"\n"),file="Analysis Log.txt",append=T)
-  if(ToWrite2!="") { write(paste0(ToWrite2,"\n\n"),file="Analysis Log.txt",append=T) }
+  write(paste0("\n\n",ToWrite,"\n"),file="Analysis Log.txt",append=TRUE)
+  if(ToWrite2!="") { write(paste0(ToWrite2,"\n\n"),file="Analysis Log.txt",append=TRUE) }
   cat(ToWrite,ToWrite2,sep="\n")
 }
 
@@ -208,12 +208,12 @@ for(i in 1:length(Targets)) {
   ## Check input suitability for probit or dose-response modeling:
   if(sum(DAT2$Rate[DAT2$Target==Targets[i]]!=1&DAT2$Rate[DAT2$Target==Targets[i]]!=0)==0) {
     ToWrite <- paste0("WARNING: For ",Targets[i],", all standards detected fully or failed fully.  Therefore, the LoD model will not converge.")
-    write(paste0(ToWrite,"\n\n"),file="Analysis Log.txt",append=T)
+    write(paste0(ToWrite,"\n\n"),file="Analysis Log.txt",append=TRUE)
     print(ToWrite)
   }
   if(sum(DAT2$Rate[DAT2$Target==Targets[i]]!=1&DAT2$Rate[DAT2$Target==Targets[i]]!=0)==1) {
     ToWrite <- paste0("WARNING: For ",Targets[i],", only 1 standard detected in the informative range (not 0% and not 100%).  Therefore, the LoD model results will be less reliable.")
-    write(paste0(ToWrite,"\n\n"),file="Analysis Log.txt",append=T)
+    write(paste0(ToWrite,"\n\n"),file="Analysis Log.txt",append=TRUE)
     print(ToWrite)
   }
   ## Define probit model:
@@ -269,7 +269,7 @@ for(i in 1:length(Targets)) {
     })
     ## Determine which models were able to be determined:
     A <- sapply(c("LOQ1","LOQ2","LOQ3","LOQ4","LOQ5","LOQ6","LOQ7"),exists)
-    B <- names(A)[A==T]
+    B <- names(A)[A==TRUE]
     ## If at least 1 LOQ model was determined, select the one with the lowest
     ##   residual standard error:
     if(length(B)>0) {
@@ -277,7 +277,7 @@ for(i in 1:length(Targets)) {
       for(j in 1:length(B)) {
         LOQ.res[j] <- summary(get(B[j]))$sigma
       }
-      C <- which(LOQ.res==min(LOQ.res,na.rm=T))
+      C <- which(LOQ.res==min(LOQ.res,na.rm=TRUE))
       assign(paste0("LOQ.mod",i),get(B[C]))
       LOQ.list <- c(LOQ.list,paste0("LOQ.mod",i))
     }
@@ -322,7 +322,7 @@ for(i in 1:length(Targets)) {
     LOQ.list <- c(LOQ.list,NA)
   }
   ## Define the logarithmic model for LOD using user-selected function:
-  if(is.list(LOD.FCT)==T) {
+  if(is.list(LOD.FCT)==TRUE) {
     tryCatch({ #skip if model cannot be determined.
       assign(paste0("LOD.mod2",i),drm(Detect~SQ,data=DAT[DAT$Target==Targets[i],],fct=LOD.FCT))
       LOD.list2 <- c(LOD.list2,paste0("LOD.mod2",i))
@@ -401,23 +401,23 @@ for(i in 1:length(Targets)) {
                           " yielded higher Cq.CV values than the user-defined CV threshold of ",
                           LOQ.Threshold,". The CV threshold has been adjusted to ",
                           B*1.5," for the LOQ of this marker.")
-        write(paste0(ToWrite,"\n\n"),file="Analysis Log.txt",append=T)
+        write(paste0(ToWrite,"\n\n"),file="Analysis Log.txt",append=TRUE)
       }
     }
     if(as.character(get(LOQ.list[i+1])$call)[1]=="lm") {
       ## For polynomial:
-      if(grepl("poly",as.character(get(LOQ.list[i+1])$call)[2])==T) {
+      if(grepl("poly",as.character(get(LOQ.list[i+1])$call)[2])==TRUE) {
         ## Determine the highest standard used:
         A <- max(DAT2$Standards[DAT2$Target==Targets[i]])
         ## Adjust if the tested range does not cross below the CV threshold:
-        if(min(DAT2$Cq.CV[DAT2$Target==Targets[i]],na.rm=T)>LOQ.Threshold) {
-          B <- min(DAT2$Cq.CV[DAT2$Target==Targets[i]],na.rm=T)*1.5
+        if(min(DAT2$Cq.CV[DAT2$Target==Targets[i]],na.rm=TRUE)>LOQ.Threshold) {
+          B <- min(DAT2$Cq.CV[DAT2$Target==Targets[i]],na.rm=TRUE)*1.5
           ## Make a note of the adjusted threshold in the analysis log:
           ToWrite <- paste0("Note: All standards tested for ",Targets[i],
                             " yielded higher Cq.CV values than the user-defined CV threshold of ",
                             LOQ.Threshold,". The CV threshold has been adjusted to ",
                             B," for the LOQ of this marker.")
-          write(paste0(ToWrite,"\n\n"),file="Analysis Log.txt",append=T)
+          write(paste0(ToWrite,"\n\n"),file="Analysis Log.txt",append=TRUE)
         }
         else {
           B <- LOQ.Threshold
@@ -438,7 +438,7 @@ for(i in 1:length(Targets)) {
       }
     }
     ## If modeled LOQ is calculated to be below the 95% LOD, set LOD as LOQ:
-    if(is.na(DAT3$LOD[i])==F) {
+    if(is.na(DAT3$LOD[i])==FALSE) {
       if(DAT3$LOQ[i]<DAT3$LOD[i]) {
         DAT3$LOQ[i] <- DAT3$LOD[i]
       }
@@ -450,28 +450,28 @@ for(i in 1:length(Targets)) {
     }
   }
 }
-write("Assay summary:",file="Analysis Log.txt",append=T)
-write("\nR.squared: The R-squared value of linear regression of all standards Cq-values vs log10 of the starting quantities.",file="Analysis Log.txt",append=T)
-write("Slope: The slope of the linear regression.",file="Analysis Log.txt",append=T)
-write("Intercept: The y-intercept of the linear regression.",file="Analysis Log.txt",append=T)
-write("\nLow.95: The lowest standard with at least 95% positive detection.",file="Analysis Log.txt",append=T)
-write("LOD: The 95% limit of detection as determined by probit modeling.",file="Analysis Log.txt",append=T)
-write(paste0("LOQ: The limit of quantification as determined by decay modeling, using the user-selected CV threshold of: ",LOQ.Threshold),file="Analysis Log.txt",append=T)
-write("\nrep2.LOD: The effective limit of detection if analyzing in 2 replicates.",file="Analysis Log.txt",append=T)
-write("rep3.LOD: The effective limit of detection if analyzing in 3 replicates.",file="Analysis Log.txt",append=T)
-write("rep4.LOD: The effective limit of detection if analyzing in 4 replicates.",file="Analysis Log.txt",append=T)
-write("rep5.LOD: The effective limit of detection if analyzing in 5 replicates.",file="Analysis Log.txt",append=T)
-write("rep8.LOD: The effective limit of detection if analyzing in 8 replicates.\n\n",file="Analysis Log.txt",append=T)
-write.csv(DAT3,file="Assay summary.csv",row.names=F)
+write("Assay summary:",file="Analysis Log.txt",append=TRUE)
+write("\nR.squared: The R-squared value of linear regression of all standards Cq-values vs log10 of the starting quantities.",file="Analysis Log.txt",append=TRUE)
+write("Slope: The slope of the linear regression.",file="Analysis Log.txt",append=TRUE)
+write("Intercept: The y-intercept of the linear regression.",file="Analysis Log.txt",append=TRUE)
+write("\nLow.95: The lowest standard with at least 95% positive detection.",file="Analysis Log.txt",append=TRUE)
+write("LOD: The 95% limit of detection as determined by probit modeling.",file="Analysis Log.txt",append=TRUE)
+write(paste0("LOQ: The limit of quantification as determined by decay modeling, using the user-selected CV threshold of: ",LOQ.Threshold),file="Analysis Log.txt",append=TRUE)
+write("\nrep2.LOD: The effective limit of detection if analyzing in 2 replicates.",file="Analysis Log.txt",append=TRUE)
+write("rep3.LOD: The effective limit of detection if analyzing in 3 replicates.",file="Analysis Log.txt",append=TRUE)
+write("rep4.LOD: The effective limit of detection if analyzing in 4 replicates.",file="Analysis Log.txt",append=TRUE)
+write("rep5.LOD: The effective limit of detection if analyzing in 5 replicates.",file="Analysis Log.txt",append=TRUE)
+write("rep8.LOD: The effective limit of detection if analyzing in 8 replicates.\n\n",file="Analysis Log.txt",append=TRUE)
+write.csv(DAT3,file="Assay summary.csv",row.names=FALSE)
 
 ## Plot Cq value vs Standard Concentration standard curves:
 DAT$Mod[DAT$Mod==0] <- "Excluded"
 DAT$Mod[DAT$Mod==1] <- "Modeled"
 for(i in 1:length(Targets)) {
-  ggOut <- ggplot(data=DAT[DAT$Target==Targets[i]&is.na(DAT$SQ)==F,],
+  ggOut <- ggplot(data=DAT[DAT$Target==Targets[i]&is.na(DAT$SQ)==FALSE,],
                   aes(x=SQ,y=Cq,color=factor(Mod),shape=factor(Mod),size=factor(Mod))) + 
     geom_jitter(width=0.1,alpha=0.75) + 
-    scale_shape_manual("",values=c(3,20),guide=F) +
+    scale_shape_manual("",values=c(3,20),guide=FALSE) +
     scale_size_manual("",values=c(1,3)) +
     scale_x_log10() +
     scale_color_manual("",values=c("blue", "black")) +
@@ -481,9 +481,9 @@ for(i in 1:length(Targets)) {
                 slope=coef(get(curve.list[i+1]))[2]) +
     geom_vline(xintercept=DAT3$LOD[i],colour="red") +
     geom_vline(xintercept=DAT3$LOQ[i],linetype=2) +
-    annotate("text",y=max(DAT$Cq[DAT$Target==Targets[i]],na.rm=T)*0.99,color="red",
+    annotate("text",y=max(DAT$Cq[DAT$Target==Targets[i]],na.rm=TRUE)*0.99,color="red",
              x=DAT3$LOD[i]*0.8,angle=90,label="LOD") +
-    annotate("text",y=max(DAT$Cq[DAT$Target==Targets[i]],na.rm=T)*0.94,
+    annotate("text",y=max(DAT$Cq[DAT$Target==Targets[i]],na.rm=TRUE)*0.94,
              x=DAT3$LOQ[i]*0.8,angle=90,label="LOQ") +
     theme_bw() + theme(legend.justification=c(1,1),legend.position=c(1,0.99)) +
     ggtitle(paste0("Standard curve for: ",Targets[i])) +
@@ -491,8 +491,8 @@ for(i in 1:length(Targets)) {
           axis.title=element_text(size=16)) +
     theme(legend.title=element_blank(),
           legend.text=element_text(size=11)) +
-    annotate("text",y=min(DAT$Cq[DAT$Target==Targets[i]&is.na(DAT$SQ)==F],na.rm=T)*1.05,
-             x=min(DAT$SQ[DAT$Target==Targets[i]&is.na(DAT$SQ)==F],na.rm=T)*1.01,hjust=0,
+    annotate("text",y=min(DAT$Cq[DAT$Target==Targets[i]&is.na(DAT$SQ)==FALSE],na.rm=TRUE)*1.05,
+             x=min(DAT$SQ[DAT$Target==Targets[i]&is.na(DAT$SQ)==FALSE],na.rm=TRUE)*1.01,hjust=0,
              label=(paste0("R-squared: ",DAT3$R.squared[i],"\ny = ",DAT3$Slope[i],"x + ",DAT3$Intercept[i])))
   print(ggOut)
   readline(prompt="Press [Enter] for next plot.")
@@ -526,7 +526,7 @@ for(i in 1:length(Targets)) {
     }
     plot(get(LOD.list2[i+1]),main=paste0("LoD Plot for: ",Targets[i]),
          ylab="Detection Probability",xlab="Standard concentrations (Copies / Reaction)",
-         xlim=c(min(DAT4[,1:4],na.rm=T),max(DAT$SQ,na.rm=T)))
+         xlim=c(min(DAT4[,1:4],na.rm=TRUE),max(DAT$SQ,na.rm=TRUE)))
     LODS <- sum(!is.na(DAT4[,1]))
     COLS <- c(rgb(0.8,0.47,0.65),rgb(0,0.45,0.7),rgb(0.94,0.89,0.26),
               rgb(0.84,0.37,0),rgb(0,0.62,0.45),rgb(0.90,0.62,0))
@@ -557,23 +557,23 @@ for(i in 1:length(Targets)) {
   print("Calculating... Please wait.")
 }
 LOD.CI <- LOD.CI[,c(6,5,1,3,4,2)]
-write.csv(LOD.CI,file="LOD_confint.csv",row.names=F)
+write.csv(LOD.CI,file="LOD_confint.csv",row.names=FALSE)
 
 ## Plot the LoQ models of each assay:
 for(i in 1:length(Targets)) {
-  if(is.na(LOQ.list[i+1])==F) {
+  if(is.na(LOQ.list[i+1])==FALSE) {
     ## Re-generate prediction data for the model:
     newData <- data.frame(Standards = seq(1, 10000))
     newData$Cq.CV <- predict(get(LOQ.list[i+1]), newData)
     ## Define LOQ polygon coordinates:
-    PDAT <- data.frame(x=c(min(DAT2$Standards[DAT2$Target==Targets[i]],na.rm=T),
-                           min(DAT2$Standards[DAT2$Target==Targets[i]],na.rm=T),
+    PDAT <- data.frame(x=c(min(DAT2$Standards[DAT2$Target==Targets[i]],na.rm=TRUE),
+                           min(DAT2$Standards[DAT2$Target==Targets[i]],na.rm=TRUE),
                            DAT3$LOQ[DAT3$Assay==Targets[i]],
                            DAT3$LOQ[DAT3$Assay==Targets[i]]),
-                       y=c(min(c(DAT2$Cq.CV[DAT2$Target==Targets[i]],newData$Cq.CV[newData$Standards<=max(DAT2$Standards[DAT2$Target==Targets[i]])&newData$Standards>=min(DAT2$Standards[DAT2$Target==Targets[i]])]),na.rm=T)*0.9,
+                       y=c(min(c(DAT2$Cq.CV[DAT2$Target==Targets[i]],newData$Cq.CV[newData$Standards<=max(DAT2$Standards[DAT2$Target==Targets[i]])&newData$Standards>=min(DAT2$Standards[DAT2$Target==Targets[i]])]),na.rm=TRUE)*0.9,
                            newData$Cq.CV[newData$Standards==DAT3$LOQ[DAT3$Assay==Targets[i]]],
                            newData$Cq.CV[newData$Standards==DAT3$LOQ[DAT3$Assay==Targets[i]]],
-                           min(c(DAT2$Cq.CV[DAT2$Target==Targets[i]],newData$Cq.CV[newData$Standards<=max(DAT2$Standards[DAT2$Target==Targets[i]])&newData$Standards>=min(DAT2$Standards[DAT2$Target==Targets[i]])]),na.rm=T)*0.9))
+                           min(c(DAT2$Cq.CV[DAT2$Target==Targets[i]],newData$Cq.CV[newData$Standards<=max(DAT2$Standards[DAT2$Target==Targets[i]])&newData$Standards>=min(DAT2$Standards[DAT2$Target==Targets[i]])]),na.rm=TRUE)*0.9))
     if(DAT3$LOQ[DAT3$Assay==Targets[i]]!=floor(DAT3$LOQ[DAT3$Assay==Targets[i]])) {
       PDAT$y[2:3] <- LOQ.Threshold
     }
@@ -585,16 +585,16 @@ for(i in 1:length(Targets)) {
     ylab("Coefficient of variation for Cq-Values") +
     xlab("Standard concentrations (Copies / Reaction)") +
     geom_vline(xintercept=DAT3$LOD[DAT3$Assay==Targets[i]],color="red") +
-    annotate("text",y=max(DAT2$Cq.CV[DAT2$Target==Targets[i]],na.rm=T)*0.99,
+    annotate("text",y=max(DAT2$Cq.CV[DAT2$Target==Targets[i]],na.rm=TRUE)*0.99,
              x=DAT3$LOD[i]*0.8,angle=90,label="LOD",color="red") +
     theme(legend.position="none") +
     theme(plot.title=element_text(hjust=0.5))
   
-  if(is.na(LOQ.list[i+1])==F) {
+  if(is.na(LOQ.list[i+1])==FALSE) {
     if(DAT3$LOQ[DAT3$Assay==Targets[i]]<=min(DAT2$Standards[DAT2$Target==Targets[i]])) {
       PDAT$x[3:4] <- NA
       Decay.Plot <- Decay.Plot + 
-        annotate("text",y=max(DAT2$Cq.CV[DAT2$Target==Targets[i]],na.rm=T)*0.99,
+        annotate("text",y=max(DAT2$Cq.CV[DAT2$Target==Targets[i]],na.rm=TRUE)*0.99,
                  x=median(DAT2$Standards[DAT2$Target==Targets[i]]),
                  label="LOQ may be outside tested range.",hjust=0)
     }
@@ -607,21 +607,21 @@ for(i in 1:length(Targets)) {
     }
 
     if(as.character(get(LOQ.list[i+1])$call)[1]=="lm") {
-      if(grepl("poly",as.character(get(LOQ.list[i+1])$call)[2])==T) {
+      if(grepl("poly",as.character(get(LOQ.list[i+1])$call)[2])==TRUE) {
         B <- length(get(LOQ.list[i+1])$coefficients)-1
         Decay.Plot <- Decay.Plot +
-          stat_smooth(method = "lm", formula = y ~ poly(x,B),se=F) +
+          stat_smooth(method = "lm", formula = y ~ poly(x,B),se=FALSE) +
           ggtitle(paste0(B,"-order polynomial LOQ model for: ",Targets[i]))
       }
       else {
         Decay.Plot <- Decay.Plot +
-          stat_smooth(method = "lm", formula = y ~ x,se=F) +
+          stat_smooth(method = "lm", formula = y ~ x,se=FALSE) +
           ggtitle(paste0("Linear LOQ model for: ",Targets[i]))
       }
     } 
   }
   
-  if(is.na(LOQ.list[i+1])==T) {
+  if(is.na(LOQ.list[i+1])==TRUE) {
     Decay.Plot <- Decay.Plot + 
       ggtitle(paste0("LOQ model for: ",Targets[i]," not solvable."))
   }
